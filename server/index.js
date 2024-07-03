@@ -13,6 +13,10 @@ async function startServer(){
                 title: String!
                 completed: Boolean!
             }
+
+            type Query {
+                getTodos: [Todo]
+            }
         `,
         resolvers: {},
     });
