@@ -18,7 +18,23 @@ async function startServer(){
                 getTodos: [Todo]
             }
         `,
-        resolvers: {},
+        resolvers: {
+            Query: {
+                getTodos: () => {
+                    return [
+                        {
+                            id: 1,
+                            title: 'Todo 1',
+                            completed: false,
+                        },
+                        {
+                            id: 2,
+                            title: 'Todo 2',
+                            completed: true,
+                        },
+                    ];
+                },
+        },
     });
 
     app.use(bodyParser.json());
@@ -27,4 +43,6 @@ async function startServer(){
     await server.start();
 
     app.use('/graphql', expressMiddleware(server));
+
+    app.listen(8000, () => console.log('Server is running on http://localhost:8000'));
 }
