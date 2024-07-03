@@ -3,11 +3,21 @@ const { ApolloServer } = require('@apollo/server');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const { expressMiddleware } = require('@apollo/server/express4');
+const axios = require('axios');
 
 async function startServer(){
-    const app = exprerss();
+    const app = express();
     const server = new ApolloServer({
         typeDefs: `
+            type User {
+                id: ID!
+                name: String!
+                username: String!
+                email: String!
+                phone: String!
+                website: String!
+            }
+
             type Todo {
                 id: ID!
                 title: String!
@@ -16,23 +26,14 @@ async function startServer(){
 
             type Query {
                 getTodos: [Todo]
+                getAllUsers: [User]
+                getUser(id: ID!): User
             }
         `,
         resolvers: {
             Query: {
-                getTodos: () => {
-                    return [
-                        {
-                            id: 1,
-                            title: 'Todo 1',
-                            completed: false,
-                        },
-                        {
-                            id: 2,
-                            title: 'Todo 2',
-                            completed: true,
-                        },
-                    ];
+                getTodos: async() => (await axios.get('https://jsonplaceholder.typicode.com/todos')).data,
+                getAllUsers: async() => (await axios.get('https://jsonplaceholder.typicode.com/users')).data,
                 },
         },
     });
@@ -46,3 +47,5 @@ async function startServer(){
 
     app.listen(8000, () => console.log('Server is running on http://localhost:8000'));
 }
+
+startServer();
